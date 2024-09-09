@@ -1,5 +1,5 @@
 from .models import Courses
-from django.forms import ModelForm, TextInput, DateTimeInput, Textarea
+from django.forms import ModelForm, TextInput, DateInput, Textarea
 
 
 class CoursesForm(ModelForm):
@@ -16,8 +16,9 @@ class CoursesForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Описание курса'
             }),
-            "date": DateTimeInput(attrs={
+            "date": DateInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Дата публикации'
+                'placeholder': 'Дата публикации',
+                'type': 'date'
             }),
         }

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Courses
 from .forms import CoursesForm
 
@@ -13,6 +13,7 @@ def create(request):
         form = CoursesForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('home')
         else:
             error = 'Форма не верная'
 

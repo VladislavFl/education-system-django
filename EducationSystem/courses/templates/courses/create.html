@@ -3,15 +3,28 @@
 {% block title %}Добавление записи{% endblock %}
 
 {% block content %}
-  <div class="features">
-    <h1>Добавление курса</h1>
-    <form method="post">
-      {% csrf_token %}
-
-      {{ form.title }}<br>
-      {{ form.description }}<br>
-      {{ form.date }}<br>
-      <button class="btn btn-success" type="submit">Добавить курс</button>
-    </form>
+  <div class="container mt-0">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h1>Добавление курса</h1>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ form.title.label_tag }}<br>
+            {{ form.title }}
+          </div>
+          <div class="mb-3">
+            {{ form.description.label_tag }}<br>
+            {{ form.description }}
+          </div>
+          <div class="mb-3">
+            {{ form.date.label_tag }}<br>
+            {{ form.date }}
+          </div>
+          <span>{{ error }}</span>
+          <button class="btn btn-success" type="submit">Добавить курс</button>
+        </form>
+      </div>
+    </div>
   </div>
 {% endblock %}
