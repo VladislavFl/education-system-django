@@ -1,0 +1,17 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Добавление модуля{% endblock %}
+
+{% block content %}
+  <div class="container mt-0">
+    <h1>Добавление модуля к курсу: {{ course.title }}</h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form.title.label_tag }}<br>
+        {{ form.title }}
+      </div>
+      <button class="btn btn-success" type="submit">Добавить модуль</button>
+    </form>
+  </div>
+{% endblock %}
