@@ -12,8 +12,8 @@ def create_course(request):
     if request.method == 'POST':
         form = CoursesForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            course = form.save()
+            return redirect('create_module', course_id=course.id)
         else:
             error = 'Форма не верная'
 

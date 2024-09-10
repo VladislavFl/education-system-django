@@ -11,6 +11,7 @@ class Courses(models.Model):
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
+
 class Modules(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='modules')
     title = models.CharField('Название модуля', max_length=250)
