@@ -1,0 +1,10 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Выход{% endblock %}
+
+{% block content %}
+  <div class="container mt-0">
+    <h1>Вы успешно вышли из системы</h1>
+    <a href="{% url 'home' %}" class="btn btn-primary">На главную</a>
+  </div>
+{% endblock %}

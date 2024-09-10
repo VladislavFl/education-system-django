@@ -31,6 +31,25 @@
             <a class="nav-link" href="{% url 'create_course' %}"><button class="btn btn-info"><i class="fas fa-plus-circle"></i> Добавить курс</button></a>
           </li>
         </ul>
+
+        <ul class="navbar-nav ms-auto d-flex align-items-center">
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <span class="navbar-text">Привет, {{ user.username }}!</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}"><button class="btn btn-dark">Выйти</button></a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Войти</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Зарегистрироваться</a>
+            </li>
+          {% endif %}
+        </ul>
+
       </div>
     </div>
   </nav>
