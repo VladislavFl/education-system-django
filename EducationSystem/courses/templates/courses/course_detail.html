@@ -1,0 +1,42 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ course.title }}</h1>
+    <p>{{ course.description }}</p>
+    <p>Created at: {{ course.created_at }}</p>
+
+    <h2>Modules</h2>
+    <ul>
+        {% for module in modules %}
+            <li>
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.description }}</p>
+                <p>Order: {{ module.order_in_course }}</p>
+
+                <h4>Lessons</h4>
+                <ul>
+                    {% for lesson in module.lessons.all %}
+                        <li>
+                            <strong>{{ lesson.title }}</strong>
+                            <p>{{ lesson.content }}</p>
+
+                            <h5>Assignments</h5>
+                            <ul>
+                                {% for assignment in lesson.assignments.all %}
+                                    <li>
+                                        <strong>{{ assignment.title }}</strong>
+                                        <p>{{ assignment.description }}</p>
+                                        <p>Due date: {{ assignment.due_date }}</p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+

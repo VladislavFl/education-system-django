@@ -1,4 +1,4 @@
-from .models import Courses, Modules,Lessons,Assignment
+from .models import Courses, Modules, Lessons, Assignment, Enrollment
 from django.forms import ModelForm, TextInput, DateInput, Textarea
 
 
@@ -63,3 +63,9 @@ class AssignmentForm(ModelForm):
                 'placeholder': 'Описание задания'
                 }),
             }
+
+
+class EnrollmentForm(ModelForm):
+    class Meta:
+        model = Enrollment
+        fields = []

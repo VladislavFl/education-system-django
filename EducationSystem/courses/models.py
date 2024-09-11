@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Courses(models.Model):
     title = models.CharField('Название', max_length=250)
@@ -47,3 +48,11 @@ class Assignment(models.Model):
     class Meta:
         verbose_name = 'Задание'
         verbose_name_plural = 'Задания'
+
+class Enrollment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    enrolled_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'course')
