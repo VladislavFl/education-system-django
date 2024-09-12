@@ -1,0 +1,23 @@
+{% extends 'main/layout.html' %}
+{% block title %}Редактирование курса{% endblock %}
+{% block content %}
+<div class="container mt-0">
+    <h1>Редактирование курса: {{ course.title }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.title.label_tag }}<br>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label_tag }}<br>
+            {{ form.description }}
+        </div>
+        <div class="mb-3">
+            {{ form.date.label_tag }}<br>
+            {{ form.date }}
+        </div>
+        <button class="btn btn-success" type="submit">Сохранить изменения</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'main/layout.html' %}
+{% block title %}Удаление задания{% endblock %}
+{% block content %}
+<div class="container mt-0">
+    <h1>Удаление задания: {{ assignment.title }}</h1>
+    <p>Вы уверены, что хотите удалить задание?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Удалить задание</button>
+        <a href="{% url 'courses_home' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}
