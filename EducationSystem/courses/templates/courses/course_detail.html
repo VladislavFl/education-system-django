@@ -1,35 +1,21 @@
+<!-- templates/courses/course_detail.html -->
 {% extends 'main/layout.html' %}
-
 {% block title %}{{ course.title }}{% endblock %}
-
 {% block content %}
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <h1 class="display-4">{{ course.title }}</h1>
-            <p class="lead text-muted">{{ course.description }}</p>
-            <p><small>Дата создания: {{ course.created_at|date:"d M Y" }}</small></p>
-             <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
-        </div>
-    </div>
+<div class="container mt-0">
+    <h1>{{ course.title }}</h1>
+    <p>{{ course.description }}</p>
+    <p>Дата начала: {{ course.date }}</p>
+    <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
 
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="mb-3">Модули курса</h2>
-            <div class="accordion" id="modulesAccordion">
-                {% for module in modules %}
-                <ul>
+    <h2>Модули курса:</h2>
+    <ul>
         {% for module in modules %}
             <li>
                 <h3>{{ module.title }}</h3>
                 <a href="{% url 'lesson_detail' module.lessons.first.id %}">Просмотреть уроки</a>
             </li>
         {% endfor %}
-                </ul>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+    </ul>
 </div>
 {% endblock %}

@@ -67,8 +67,9 @@ class AssignmentForm(ModelForm):
             }),
         }
 
-
+#Запись на курсы
 class EnrollmentForm(ModelForm):
     class Meta:
         model = Enrollment
         fields = []
+
