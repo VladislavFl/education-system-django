@@ -1,0 +1,9 @@
+{% extends 'main/layout.html' %}
+{% block title %}Запись на курс{% endblock %}
+{% block content %}
+<div class="container mt-0">
+    <h1>{{ message }}</h1>
+    <p>Вы записаны на курс: <strong>{{ course.title }}</strong></p>
+    <a href="{% url 'courses_home' %}" class="btn btn-primary">Вернуться к курсам</a>
+</div>
+{% endblock %}

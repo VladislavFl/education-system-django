@@ -1,0 +1,18 @@
+{% extends 'main/layout.html' %}
+{% block title %}{{ lesson.title }}{% endblock %}
+{% block content %}
+<div class="container mt-0">
+    <h1>{{ lesson.title }}</h1>
+    <p>{{ lesson.content }}</p>
+
+    <h2>Задания:</h2>
+    <ul>
+        {% for assignment in assignments %}
+            <li>
+                <h3>{{ assignment.title }}</h3>
+                <p>{{ assignment.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,35 +1,74 @@
-body {
-    background: #e6e6e6;
-}
+       image-container {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            width: 80%;
+        }
+        .overlay-text h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .overlay-text p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .overlay-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+        .overlay-button button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .overlay-button button:hover {
+            background-color: #0056b3;
+        }
+ body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
-aside {
-    float: left;
-    background: #6effbe;
-    width: 20%;
-    padding: 2.5%;
-    height: 100vh;
-    color: black;
-    border-right: 5px solid #4d4d4d;
-}
-
-aside h3 {
-    margin-top: 50px;
-    font-size: 28px;
-}
-
-aside ul {
-    list-style: none;
-}
-
-aside ul li {
-    color: black;
-    display: block;
-    margin-top: 20px;
-    transition: transform .6s ease;
-}
-
-aside ul li:hover, aside ul a:hover {
-    color: green;
-    text-decoration: none;
-    transform: scale(1.05);
-}
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .contact-info, .goals, .offerings {
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background: #333;
+            color: #fff;
+        }

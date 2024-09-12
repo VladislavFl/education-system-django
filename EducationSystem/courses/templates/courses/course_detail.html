@@ -1,42 +1,35 @@
 {% extends 'main/layout.html' %}
 
-{% block content %}
-<div class="container">
-    <h1>{{ course.title }}</h1>
-    <p>{{ course.description }}</p>
-    <p>Created at: {{ course.created_at }}</p>
+{% block title %}{{ course.title }}{% endblock %}
 
-    <h2>Modules</h2>
-    <ul>
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-4">{{ course.title }}</h1>
+            <p class="lead text-muted">{{ course.description }}</p>
+            <p><small>Дата создания: {{ course.created_at|date:"d M Y" }}</small></p>
+             <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-3">Модули курса</h2>
+            <div class="accordion" id="modulesAccordion">
+                {% for module in modules %}
+                <ul>
         {% for module in modules %}
             <li>
                 <h3>{{ module.title }}</h3>
-                <p>{{ module.description }}</p>
-                <p>Order: {{ module.order_in_course }}</p>
-
-                <h4>Lessons</h4>
-                <ul>
-                    {% for lesson in module.lessons.all %}
-                        <li>
-                            <strong>{{ lesson.title }}</strong>
-                            <p>{{ lesson.content }}</p>
-
-                            <h5>Assignments</h5>
-                            <ul>
-                                {% for assignment in lesson.assignments.all %}
-                                    <li>
-                                        <strong>{{ assignment.title }}</strong>
-                                        <p>{{ assignment.description }}</p>
-                                        <p>Due date: {{ assignment.due_date }}</p>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <a href="{% url 'lesson_detail' module.lessons.first.id %}">Просмотреть уроки</a>
             </li>
         {% endfor %}
-    </ul>
+                </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
-

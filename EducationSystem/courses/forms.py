@@ -22,7 +22,8 @@ class CoursesForm(ModelForm):
                 'type': 'date'
             }),
         }
-        
+
+
 class ModuleForm(ModelForm):
     class Meta:
         model = Modules
@@ -31,8 +32,9 @@ class ModuleForm(ModelForm):
             'title': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Название модуля'
-             }),
-         }
+            }),
+        }
+
 
 class LessonForm(ModelForm):
     class Meta:
@@ -42,27 +44,28 @@ class LessonForm(ModelForm):
             'title': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Название урока'
-                    }),
+            }),
             'content': Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Содержание урока'
-              }),
+            }),
         }
 
+
 class AssignmentForm(ModelForm):
-   class Meta:
-    model = Assignment
-    fields = ['title', 'description']
-    widgets = {
+    class Meta:
+        model = Assignment
+        fields = ['title', 'description']
+        widgets = {
             'title': TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Название задания'
-                    }),
+            }),
             'description': Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Описание задания'
-                }),
-            }
+            }),
+        }
 
 
 class EnrollmentForm(ModelForm):

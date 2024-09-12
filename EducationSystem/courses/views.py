@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Courses,Modules,Lessons,Assignment,Enrollment
-from .forms import CoursesForm,ModuleForm,LessonForm,AssignmentForm
+from .models import Courses, Modules, Lessons, Assignment, Enrollment
+from .forms import CoursesForm,ModuleForm,LessonForm,AssignmentForm, EnrollmentForm
 from django.contrib.auth.decorators import login_required
 
 def courses_home(request):
@@ -76,18 +76,25 @@ def course_detail(request, course_id):
     })
 
 
+# Функция для просмотра уроков
+def lesson_detail(request, lesson_id):
+    lesson = get_object_or_404(Lessons, id=lesson_id)
+    assignments = lesson.assignments.all()
+    return render(request, 'courses/lesson_detail.html', {'lesson': lesson, 'assignments': assignments})
 
 
-
+# Функция для записи на курс
 @login_required
 def enroll_in_course(request, course_id):
-    course = get_object_or_404(Course, id=course_id)
+    course = get_object_or_404(Courses, id=course_id)
+    enrollment, created = Enrollment.objects.get_or_create(user=request.user, course=course)
 
-    if request.method == 'POST':
-        enrollment, created = Enrollment.objects.get_or_create(user=request.user, course=course)
-        if created:
-            return redirect('courses:course_detail', course_id=course.id)  # Переход к деталям курса
-        else:
-            return render(request, 'courses/enrollment_error.html', {'course': course})
+    if created:
+        message = "Вы успешно записались на курс!"
+    else:
+        message = "Вы уже записаны на этот курс."
 
-    return render(request, 'courses/enroll_in_course.html', {'course': course})
+    return render(request, 'courses/enrollment_success.html', {'message': message, 'course': course})
+
+
+
