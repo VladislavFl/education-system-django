@@ -1,17 +1,21 @@
+<!-- create_module.html -->
 {% extends 'main/layout.html' %}
-
 {% block title %}Добавление модуля{% endblock %}
-
 {% block content %}
-  <div class="container mt-0">
+<div class="container mt-0">
     <h1>Добавление модуля к курсу: {{ course.title }}</h1>
     <form method="post">
-      {% csrf_token %}
-      <div class="mb-3">
-        {{ form.title.label_tag }}<br>
-        {{ form.title }}
-      </div>
-      <button class="btn btn-success" type="submit">Добавить модуль</button>
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.title.label_tag }}<br>
+            {{ form.title }}
+        </div>
+        <button class="btn btn-success" type="submit">Добавить модуль</button>
     </form>
-  </div>
+     <div class="mb-3">
+        <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
+        <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
+    </div>
+    <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">Вернуться к курсу</a>
+</div>
 {% endblock %}

@@ -1,6 +1,9 @@
 from datetime import timezone
+from sys import modules
 
 from django.shortcuts import render, redirect, get_object_or_404
+
+import courses
 from .models import Courses, Modules, Lessons, Assignment, Enrollment
 from .forms import CoursesForm, ModuleForm, LessonForm, AssignmentForm, EnrollmentForm
 from django.contrib.auth.decorators import login_required
@@ -36,7 +39,7 @@ def create_module(request, course_id):
             module = form.save(commit=False)
             module.course = course
             module.save()
-            return redirect('create_lesson', module_id=module.id)
+            return redirect('module_detail', module_id=module.id)# Перенаправляем на страницу модуля
     else:
         form = ModuleForm()
     return render(request, 'courses/create_module.html', {'form': form, 'course': course})
@@ -62,7 +65,7 @@ def create_assignment(request, lesson_id):
             assignment = form.save(commit=False)
             assignment.lesson = lesson
             assignment.save()
-            return redirect('courses_home')
+            return redirect('lesson_detail', lesson_id=lesson.id)
     else:
         form = AssignmentForm()
     return render(request, 'courses/create_assignment.html', {'form': form, 'lesson': lesson})
@@ -77,12 +80,49 @@ def course_detail(request, course_id):
         'lessons': 3,
     })
 
+def module_detail(request, module_id):
+    module = get_object_or_404(Modules, id=module_id)
+    lessons = module.lessons.all()  # Получаем все уроки модуля
+    course = module.course  # Получаем курс, к которому принадлежит модуль
+    return render(request, 'courses/module_detail.html', {
+        'module': module,
+        'lessons': lessons,
+        'course': course,  # Передаем курс в контекст
+    })
 
-# Функция для просмотра уроков
+@login_required
 def lesson_detail(request, lesson_id):
     lesson = get_object_or_404(Lessons, id=lesson_id)
+    module = lesson.module  # Получаем модуль из урока
+    if module is None:
+        # Обработка случая, если модуль не найден
+        return render(request, 'courses/error.html', {'message': 'Модуль не найден.'})
+
+    course = module.course  # Получаем курс из модуля
+
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        return redirect('access_denied', course_id=course.id)
+
     assignments = lesson.assignments.all()
-    return render(request, 'courses/lesson_detail.html', {'lesson': lesson, 'assignments': assignments})
+    return render(request, 'courses/lesson_detail.html', {
+        'lesson': lesson,
+        'assignments': assignments,
+        'module': module,  # Передаем модуль в контекст
+    })
+
+def assignment_detail(request, assignment_id):
+    # Получаем задание по его идентификатору
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    lesson = assignment.lesson  # Предполагается, что задание связано с уроком
+
+    # Отправляем данные в шаблон
+    return render(request, 'courses/assignment_detail.html', {
+        'assignment': assignment,
+        'lesson': lesson,
+    })
+def access_denied(request, course_id):
+    course = get_object_or_404(Courses, id=course_id)
+    return render(request, 'courses/access_denied.html', {'course': course})
 
 # Функция для записи на курс
 @login_required
@@ -92,6 +132,12 @@ def enroll_in_course(request, course_id):
 
     if created:
         message = "Вы успешно записались на курс!"
+        # Получаем первую лекцию из модуля курса
+        first_module = course.modules.first()
+        if first_module:
+            first_lesson = first_module.lessons.first()
+            if first_lesson:
+                return redirect('lesson_detail', lesson_id=first_lesson.id)
     else:
         message = "Вы уже записаны на этот курс."
 
@@ -103,47 +149,11 @@ def edit_course(request, course_id):
     if request.method == 'POST':
         form = CoursesForm(request.POST, instance=course)
         if form.is_valid():
-            form.save()
-            return redirect('courses_home')
+            form.save()# Сохраняем изменения
+            return redirect('course_detail', course_id=course.id)  # Перенаправляем на страницу курса
     else:
         form = CoursesForm(instance=course)
     return render(request, 'courses/edit_course.html', {'form': form, 'course': course})
-
-@login_required
-def edit_module(request, module_id):
-    module = get_object_or_404(Modules, id=module_id)
-    if request.method == 'POST':
-        form = ModuleForm(request.POST, instance=module)
-        if form.is_valid():
-            form.save()
-            return redirect('create_lesson', module_id=module.id)
-    else:
-        form = ModuleForm(instance=module)
-    return render(request, 'courses/edit_module.html', {'form': form, 'module': module})
-
-@login_required
-def edit_lesson(request, lesson_id):
-    lesson = get_object_or_404(Lessons, id=lesson_id)
-    if request.method == 'POST':
-        form = LessonForm(request.POST, instance=lesson)
-        if form.is_valid():
-            form.save()
-            return redirect('create_assignment', lesson_id=lesson.id)
-    else:
-        form = LessonForm(instance=lesson)
-    return render(request, 'courses/edit_lesson.html', {'form': form, 'lesson': lesson})
-
-@login_required
-def edit_assignment(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id)
-    if request.method == 'POST':
-        form = AssignmentForm(request.POST, instance=assignment)
-        if form.is_valid():
-            form.save()
-            return redirect('courses_home')
-    else:
-        form = AssignmentForm(instance=assignment)
-    return render(request, 'courses/edit_assignment.html', {'form': form, 'assignment': assignment})
 
 @login_required
 def delete_course(request, course_id):
@@ -154,25 +164,68 @@ def delete_course(request, course_id):
     return render(request, 'courses/delete_course.html', {'course': course})
 
 @login_required
-def delete_module(request, module_id):
+def edit_module(request, module_id):
     module = get_object_or_404(Modules, id=module_id)
     if request.method == 'POST':
-        module.delete()
-        return redirect('courses_home')
-    return render(request, 'courses/delete_module.html', {'module': module})
+        form = ModuleForm(request.POST, instance=module)
+        if form.is_valid():
+            form.save()
+            return redirect('module_detail', module_id=module.id)# Перенаправляем на страницу модуля
+    else:
+        form = ModuleForm(instance=module)
+    return render(request, 'courses/edit_module.html', {'form': form, 'module': module})
+
+@login_required
+def delete_module(request, module_id):
+    # Получаем модуль или выдаем 404, если не найден
+    module = get_object_or_404(Modules, id=module_id)
+    course_id = module.course.id  # Сохраняем ID курса для перенаправления
+
+    if request.method == 'POST':
+        module.delete()  # Удаляем модуль
+        return redirect('course_detail', course_id=course_id)  # Перенаправляем к деталям курса
+
+    return render(request, 'courses/delete_module.html', {'module': module}) # Возвращаем страницу подтверждения удаления модуля
+
+@login_required
+def edit_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lessons, id=lesson_id)
+    if request.method == 'POST':
+        form = LessonForm(request.POST, instance=lesson)
+        if form.is_valid():
+            form.save()
+            return redirect('lesson_detail', lesson_id=lesson.id)
+    else:
+        form = LessonForm(instance=lesson)
+    return render(request, 'courses/edit_lesson.html', {'form': form, 'lesson': lesson})
 
 @login_required
 def delete_lesson(request, lesson_id):
     lesson = get_object_or_404(Lessons, id=lesson_id)
+    module_id = lesson.module.id  # Получаем ID модуля, к которому принадлежит урок
     if request.method == 'POST':
-        lesson.delete()
-        return redirect('courses_home')
+        lesson.delete()  # Удаляем урок
+        return redirect('module_detail', module_id=module_id)  # Перенаправляем к деталям модуля
     return render(request, 'courses/delete_lesson.html', {'lesson': lesson})
+
+@login_required
+def edit_assignment(request, assignment_id):
+    assignment = get_object_or_404(Assignment, id=assignment_id)
+    if request.method == 'POST':
+        form = AssignmentForm(request.POST, instance=assignment)
+        if form.is_valid():
+            form.save()
+            return redirect('assignment_detail', assignment_id=assignment_id)
+    else:
+        form = AssignmentForm(instance=assignment)
+    return render(request, 'courses/edit_assignment.html', {'form': form, 'assignment': assignment})
+
 
 @login_required
 def delete_assignment(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
+    lesson_id = assignment.lesson.id
     if request.method == 'POST':
         assignment.delete()
-        return redirect('courses_home')
+        return redirect('lesson_detail', lesson_id=lesson_id)
     return render(request, 'courses/delete_assignment.html', {'assignment': assignment})

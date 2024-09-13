@@ -17,7 +17,8 @@
             {{ form.date.label_tag }}<br>
             {{ form.date }}
         </div>
-        <button class="btn btn-success" type="submit">Сохранить изменения</button>
+       <button type="submit" class="btn btn-success">Сохранить изменения</button>
+        <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">Отмена</a>
     </form>
 </div>
 {% endblock %}
