@@ -2,32 +2,36 @@
 {% extends 'main/layout.html' %}
 {% block title %}{{ course.title }}{% endblock %}
 {% block content %}
-<div class="container mt-0">
-    <h1>{{ course.title }}</h1>
-    <p>{{ course.description }}</p>
-    <p>Дата начала: {{ course.date }}</p>
-       <!-- Кнопки для редактирования и удаления курса -->
-    <div class="mb-3">
-        <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
-        <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
-        <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
+    <div class="container mt-0">
+        <h1>{{ course.title }}</h1>
+        <p>{{ course.description }}</p>
+        <p>Дата начала: {{ course.date }}</p>
+
+        <!-- Кнопки для редактирования и удаления курса -->
+        {% if request.GET.mode == 'edit' %}
+            <div>
+                <div class="mb-3">
+                    <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
+                    <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
+                    <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <a href="{% url 'courses_home' %}" class="btn btn-secondary">Сохранить курс</a>
+                    <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
+                </form>
+                <h2>Модули курса:</h2>
+                <ul>
+                    {% for module in modules %}
+                        <li>
+                            <a href="{% url 'module_detail' module.id %}">{{ module.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
+            </div>
+        {% endif %}
+
+
     </div>
-    <form method="POST">
-        {% csrf_token %}
-        <a href="{% url 'courses_home' %}" class="btn btn-secondary">Сохранить курс</a>
-        <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
-    </form>
-    <h2>Модули курса:</h2>
-    <ul>
-    {% for module in modules %}
-        <li>
-             <h3>{{ module.title }}</h3>
-            <a href="{% url 'module_detail' module.id %}" class="btn btn-info">Детали модуля</a>
-        </li>
-    {% endfor %}
-    </ul>
-    <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
-
-
-</div>
 {% endblock %}

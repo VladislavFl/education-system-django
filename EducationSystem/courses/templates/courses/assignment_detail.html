@@ -4,12 +4,17 @@
 <div class="container mt-0">
    <h1>{{ assignment.title }}</h1>
     <p>{{ assignment.description }}</p>
-    <h2>Детали задания</h2>
-    <p>Срок: {{ assignment.due_date }}</p>
+    {if request.GET.mode == 'edit' %}
+    <div>
+        <div class="mb-3">
+        <a href="{% url 'edit_assignment' assignment.id %}" class="btn btn-warning">Редактировать задание</a>
+        <a href="{% url 'delete_assignment' assignment.id %}" class="btn btn-danger">Удалить задание</a>
+        <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-secondary">Вернуться к уроку</a>
+    </div>
+        <h2>Детали задания</h2>
+        <p>Срок: {{ assignment.due_date }}</p>
+ {% endif %}
 
-    <a href="{% url 'edit_assignment' assignment.id %}" class="btn btn-warning">Редактировать задание</a>
-    <a href="{% url 'delete_assignment' assignment.id %}" class="btn btn-danger">Удалить задание</a>
-    <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-secondary">Вернуться к уроку</a>
-</div>
+    </div>
 {% endblock %}
 

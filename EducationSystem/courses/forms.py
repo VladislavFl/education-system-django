@@ -27,7 +27,7 @@ class CoursesForm(ModelForm):
 class ModuleForm(ModelForm):
     class Meta:
         model = Modules
-        fields = ['title']
+        fields = ['title', 'description']
         widgets = {
             'title': TextInput(attrs={
                 'class': 'form-control',

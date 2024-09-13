@@ -13,7 +13,9 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ el.title }}</h5>
                             <p class="card-text">{{ el.description }}</p>
-                            <a href="{% url 'course_detail' el.id %}" class="btn btn-primary">Подробнее</a>
+                            <a href="{% url 'course_detail' el.id %}?mode=view" class="btn btn-primary">Подробнее</a>
+                           
+                            <a href="{% url 'course_detail' el.id %}?mode=edit" class="btn btn-primary">Редактировать</a>
                         </div>
                     </div>
                 </div>

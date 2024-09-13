@@ -1,21 +1,29 @@
 {% extends 'main/layout.html' %}
 {% block title %}{{ module.title }}{% endblock %}
 {% block content %}
+
 <div class="container mt-0">
     <h1>{{ module.title }}</h1>
     <p>{{ module.description }}</p>
-    <h2>Уроки в этом модуле:</h2>
-    <ul>
-        {% for lesson in lessons %}
-            <li>
-                <h3>{{ lesson.title }}</h3>
-                <a href="{% url 'lesson_detail' lesson.id %}" class="btn btn-info">Просмотреть урок</a>
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'create_lesson' module.id %}" class="btn btn-info">Добавить урок</a>
-    <a href="{% url 'edit_module' module.id %}" class="btn btn-warning">Редактировать модуль</a>
-    <a href="{% url 'delete_module' module.id %}" class="btn btn-danger">Удалить модуль</a>
-    <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">Вернуться к курсу</a>
-</div>
+    {if request.GET.mode == 'edit' %}
+    <div>
+        <div class="mb-3">
+            <a href="{% url 'edit_module' module.id %}" class="btn btn-warning">Редактировать модуль</a>
+            <a href="{% url 'delete_module' module.id %}" class="btn btn-danger">Удалить модуль</a>
+            <a href="{% url 'course_detail' course.id %}" class="btn btn-secondary">Вернуться к курсу</a>
+        </div>>
+        <h2>Уроки в этом модуле:</h2>
+        <ul>
+            {% for lesson in lessons %}
+                <li>
+                    <a href="{% url 'lesson_detail' lesson.id %}" >{{ lesson.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'create_lesson' module.id %}" class="btn btn-info">Добавить урок</a>
+        </div>
+     {% endif %}
+
+
+    </div>
 {% endblock %}
