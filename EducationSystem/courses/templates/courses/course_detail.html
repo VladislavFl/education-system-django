@@ -10,8 +10,13 @@
     <div class="mb-3">
         <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
         <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
+        <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
     </div>
-    <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
+    <form method="POST">
+        {% csrf_token %}
+        <a href="{% url 'courses_home' %}" class="btn btn-secondary">Сохранить курс</a>
+        <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
+    </form>
     <h2>Модули курса:</h2>
     <ul>
     {% for module in modules %}
@@ -22,5 +27,7 @@
     {% endfor %}
     </ul>
     <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
+
+
 </div>
 {% endblock %}

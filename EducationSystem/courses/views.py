@@ -19,7 +19,7 @@ def create_course(request):
         form = CoursesForm(request.POST)
         if form.is_valid():
             course = form.save()
-            return redirect('create_module', course_id=course.id)
+            return redirect('course_detail', course_id=course.id)
         else:
             error = 'Форма не верная'
 
@@ -73,7 +73,11 @@ def create_assignment(request, lesson_id):
 def course_detail(request, course_id):
     course = get_object_or_404(Courses, id=course_id)
     modules = course.modules.all()
-    #lessons = course.lessons.all()
+    if request.method == 'POST':
+        # Здесь можно добавить логику для обработки сохранения курса
+        course.save()  # Сохраняем курс, если это необходимо
+        return redirect('course_detail', course_id=course.id)  # Перенаправляем на страницу курса
+
     return render(request, 'courses/course_detail.html', {
         'course': course,
         'modules': modules,

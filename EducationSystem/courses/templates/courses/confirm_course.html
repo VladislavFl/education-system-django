@@ -1,0 +1,12 @@
+{% extends 'main/layout.html' %}
+{% block title %}Подтверждение создания курса{% endblock %}
+{% block content %}
+<div class="container mt-0">
+    <h1>Подтверждение создания курса "{{ course.title }}"</h1>
+    <form method="POST" action="{% url 'confirm_course' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Сохранить курс</button>
+        <a href="{% url 'create_course' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}
