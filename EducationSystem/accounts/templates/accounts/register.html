@@ -3,31 +3,33 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-  <div class="container mt-0">
+<div class="container mt-0">
     <div class="row justify-content-center">
-      <div class="col-md-8">
-        <h1>Регистрация</h1>
-          <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              {{ form.username.label_tag }}<br>
-              {{ form.username }}
-            </div>
-            <div class="mb-3">
-              {{ form.email.label_tag }}<br>
-              {{ form.email }}
-            </div>
-            <div class="mb-3">
-              {{ form.password1.label_tag }}<br>
-              {{ form.password1 }}
-            </div>
-            <div class="mb-3">
-              {{ form.password2.label_tag }}<br>
-              {{ form.password2 }}
-            </div>
-            <button class="btn btn-success" type="submit">Зарегистрироваться</button>
-          </form>
+        <div class="col-md-8">
+            <h1 class="text-center">Регистрация</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    Введите имя:<br>
+                    {{ form.username }}
+                </div>
+                <div class="mb-3">
+                    Введите E-mail:<br>
+                    {{ form.email }}
+                </div>
+                <div class="mb-3">
+                    Введите пароль:<br>
+                    {{ form.password1 }}
+                </div>
+                <div class="mb-3">
+                    Подтвердите пароль:<br>
+                    {{ form.password2 }}
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success items-center" type="submit">Зарегистрироваться</button>
+                </div>
+            </form>
         </div>
-      </div>
-  </div>
+    </div>
+</div>
 {% endblock %}

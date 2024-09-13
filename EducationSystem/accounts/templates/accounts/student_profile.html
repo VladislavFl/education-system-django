@@ -5,17 +5,15 @@
     <h1>Добро пожаловать, {{ user.username }}!</h1>
     <p>Это ваш личный кабинет.</p>
     <p>Здесь вы можете просматривать ваши курсы и задания.</p>
-   <h2>Ваш прогресс:</h2>
+    <h2>Ваш прогресс:</h2>
     <ul>
         {% for progress in user_progress %}
-            <li>{{ progress.course.title }}: 
-                {% for lesson in progress.completed_lessons.all %}
-                    <span>{{ lesson.title }}</span>{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </li>
+        <li>{{ progress.course.title }}:
+            {% for lesson in progress.completed_lessons.all %}
+            <span>{{ lesson.title }}</span>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </li>
         {% endfor %}
     </ul>
-</div>
-{% endblock %}
 </div>
 {% endblock %}

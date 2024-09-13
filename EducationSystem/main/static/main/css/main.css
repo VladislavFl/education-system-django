@@ -1,4 +1,4 @@
-       image-container {
+  image-container {
             position: relative;
             display: inline-block;
             max-width: 100%;
@@ -42,13 +42,6 @@
         .overlay-button button:hover {
             background-color: #0056b3;
         }
- body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
 
         .container {
             width: 80%;
@@ -66,9 +59,13 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        footer {
-            text-align: center;
-            padding: 20px 0;
-            background: #333;
-            color: #fff;
-        }
+
+        .stepper {
+          .line {
+            width: 2px;
+            background-color: lightgrey !important;
+          }
+          .lead {
+            font-size: 1.1rem;
+          }
+}
