@@ -4,7 +4,7 @@ from sys import modules
 from django.shortcuts import render, redirect, get_object_or_404
 
 import courses
-from .models import Courses, Modules, Lessons, Assignment, Enrollment
+from .models import Courses, Modules, Lessons, Assignment, Enrollment, UserCourse
 from .forms import CoursesForm, ModuleForm, LessonForm, AssignmentForm, EnrollmentForm
 from django.contrib.auth.decorators import login_required
 
@@ -233,3 +233,4 @@ def delete_assignment(request, assignment_id):
         assignment.delete()
         return redirect('lesson_detail', lesson_id=lesson_id)
     return render(request, 'courses/delete_assignment.html', {'assignment': assignment})
+
