@@ -1,37 +1,64 @@
-<!-- course_detail.html -->
 {% extends 'main/layout.html' %}
 {% block title %}{{ course.title }}{% endblock %}
 {% block content %}
-    <div class="container mt-0">
-        <h1>{{ course.title }}</h1>
-        <p>{{ course.description }}</p>
-        <p>Дата начала: {{ course.date }}</p>
+<div class="container mt-0">
+    <h1>{{ course.title }}</h1>
+    <p>{{ course.description }}</p>
+    <p>Дата начала: {{ course.date }}</p>
 
-        <!-- Кнопки для редактирования и удаления курса -->
+    <!-- Кнопка "Записаться на курс" только в режиме просмотра -->
+    {% if request.GET.mode != 'edit' %}
+        <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success mb-3">Записаться на курс</a>
+    {% endif %}
+
+    <div>
         {% if request.GET.mode == 'edit' %}
-            <div>
-                <div class="mb-3">
-                    <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
-                    <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
-                    <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success">Записаться на курс</a>
-                </div>
-                <form method="POST">
-                    {% csrf_token %}
-                    <a href="{% url 'courses_home' %}" class="btn btn-secondary">Сохранить курс</a>
-                    <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
-                </form>
-                <h2>Модули курса:</h2>
-                <ul>
-                    {% for module in modules %}
-                        <li>
-                            <a href="{% url 'module_detail' module.id %}">{{ module.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
+            <div class="mb-3">
+                <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
+                <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
             </div>
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary">Сохранить курс</button>
+                <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
+            </form>
+            <h2>Модули курса:</h2>
+            <ul>
+                {% for module in course.modules.all %}
+                    <li>
+                        <a href="{% url 'module_detail' module.id %}?mode=view">{{ module.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
+        {% else %}
+            <h2>Модули курса:</h2>
+            <ul>
+                {% for module in course.modules.all %}
+                    <li>
+                        <a href="{% url 'module_detail' module.id %}?mode=view">{{ module.title }}</a>
+                        <ul>
+                            {% for lesson in module.lessons.all %}
+                                <li>
+                                    <a href="{% url 'lesson_detail' lesson.id %}" class="lesson-link">{{ lesson.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+            <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
         {% endif %}
-
-
     </div>
+</div>
+
+<script>
+    // Обработка клика на урок
+    document.querySelectorAll('.lesson-link').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            alert('Чтобы просмотреть урок, вам нужно записаться на курс!');
+        });
+    });
+</script>
 {% endblock %}
