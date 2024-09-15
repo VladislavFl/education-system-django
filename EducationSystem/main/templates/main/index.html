@@ -9,11 +9,11 @@
 <body>
 
 <div class="bg-dark text-white p-4 position-relative"
-     style="background: url('{% static 'img/art.jpg' %}') center center / cover no-repeat;">
+     style="background: url('{% static 'img/art.jpg' %}') center center / cover no-repeat; min-height: 100vh;">
     <div class="overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
-    <div class="container py-5 position-relative">
-        <h1 class="display-4 text-white">Школа Онлайн-Образования для Людей Третьего Возраста</h1>
-        <p class="lead">Образовательная площадка для развития потенциала людей старшего возраста</p>
+    <div class="container d-flex flex-column justify-content-center align-items-center text-center py-5 position-relative" style="height: 100vh;">
+        <h1 class="display-2 text-white mb-4">Школа Онлайн-Образования для Людей Третьего Возраста</h1>
+        <p class="h4 fw-normal mb-4">Образовательная площадка для развития потенциала людей старшего возраста</p>
         <a class="btn btn-primary btn-lg" href="accounts/register" role="button">Узнать больше</a>
     </div>
 </div>
@@ -21,29 +21,31 @@
 
 <div class="container-lg mt-4">
     <section id="about" class="school bg-light py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-12 col-md-10 col-sm-12 text-center">
-                <h2 class="display-4">О школе</h2>
-                <div class="card shadow-sm p-4">
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item mb-3 h5 fw-normal">
-                                <strong>Школа Онлайн-Образования для Людей Третьего Возраста</strong> – это образовательный проект, созданный специально для людей третьего возраста, предлагает увлекательные и полезные курсы, адаптированные к вашим потребностям и интересам.
-                            </li>
-                            <li class="list-group-item mb-3 h5 fw-normal">
-                                Способствовать активному долголетию и социальной активности.
-                            </li>
-                            <li class="list-group-item mb-3 h5 fw-normal">
-                                Расширить кругозор и развить новые навыки.
-                            </li>
-                        </ul>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-10 col-sm-12 text-center">
+                    <h2 class="display-4">О школе</h2>
+                    <div class="card shadow-sm p-4">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item mb-3 h5 fw-normal">
+                                    <strong>Школа Онлайн-Образования для Людей Третьего Возраста</strong> – это
+                                    образовательный проект, созданный специально для людей третьего возраста, предлагает
+                                    увлекательные и полезные курсы, адаптированные к вашим потребностям и интересам.
+                                </li>
+                                <li class="list-group-item mb-3 h5 fw-normal">
+                                    Способствовать активному долголетию и социальной активности.
+                                </li>
+                                <li class="list-group-item mb-3 h5 fw-normal">
+                                    Расширить кругозор и развить новые навыки.
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <div class="goals">
         <h2>Наша цель</h2>
@@ -95,7 +97,8 @@
                     <div class="line h-100 d-none"></div>
                 </div>
                 <div>
-                    <h5 class="text-dark h4 fw-normal p-1">На странице описания курса нажать на кнопку "Записаться на курс"</h5>
+                    <h5 class="text-dark h4 fw-normal p-1">На странице описания курса нажать на кнопку "Записаться на
+                        курс"</h5>
                     <p class="lead text-muted pb-3"></p>
                 </div>
             </div>
@@ -104,5 +107,4 @@
 </div>
 
 </body>
-</html>
 {% endblock %}

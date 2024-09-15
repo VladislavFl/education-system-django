@@ -1,4 +1,6 @@
 {% extends 'main/layout.html' %}
+{% load custom_tags %}
+
 {% block title %}{{ module.title }}{% endblock %}
 {% block content %}
 
@@ -21,7 +23,15 @@
     <ul>
         {% for lesson in lessons %}
             <li>
-                <a href="{% url 'lesson_detail' lesson.id %}">{{ lesson.title }}</a>
+                {% if user.is_authenticated %}
+                    {% if user|has_group:"Student" %}
+                        <a href="{% url 'lesson_detail' lesson.id %}?mode=view">{{ lesson.title }}</a>
+                    {% endif %}
+
+                    {% if user|has_group:"Teacher" %}
+                        <a href="{% url 'lesson_detail' lesson.id %}?mode=edit">{{ lesson.title }}</a>
+                    {% endif %}
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
