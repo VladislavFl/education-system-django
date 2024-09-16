@@ -1,15 +1,27 @@
 from datetime import timezone
+import random
 from sys import modules
 
 from django.shortcuts import render, redirect, get_object_or_404
-
-import courses
-from .models import Courses, Modules, Lessons, Assignment, Enrollment, UserCourse
+from .models import Courses, Modules, Lessons, Assignment, Enrollment
 from .forms import CoursesForm, ModuleForm, LessonForm, AssignmentForm, EnrollmentForm
 from django.contrib.auth.decorators import login_required
 
 def courses_home(request):
     courses = Courses.objects.all()
+    image_urls = [
+        "https://cms-b-assets.familysearch.org/dims4/default/34288f5/2147483647/strip/true/crop/900x601+0+0/resize/2400x1602!/format/jpg/quality/90/?url=https%3A%2F%2Ffamilysearch-brightspot.s3.amazonaws.com%2Fea%2Ffe%2Fe29f2f4a76961ad52ef55aaeecc8%2Fadobestock-106776715.jpg",
+        "https://www.asb-hamburg.de/fileadmin/_processed_/a/d/csm_Generation_60plus_Freiwilligaktiv_AdobeStock_57522810_742a6441bd.jpeg",
+        "https://avatars.mds.yandex.net/i?id=ddeccd76690f6ec52743365e147019dc_l-4265706-images-thumbs&n=13",
+        "https://avatars.mds.yandex.net/i?id=b8def118b2774d5ef5a3f493fdd36a29_l-10814666-images-thumbs&n=13",
+        "https://cdn.culture.ru/images/165efd63-61b7-5f91-961c-ab7190104023",
+        "https://cdn.culture.ru/images/7e9c1e77-ba1b-5bc0-b214-edd31b8dfc8a",
+        "https://avatars.mds.yandex.net/i?id=3b40090ba5910481b8e55104c3e583e3_l-5478197-images-thumbs&n=13",
+        "https://lenobl.ru/media/news/images/2020/01/22/b793dfb3-adbd-495b-8ade-9c57747426a2.jpg",
+    ]
+
+    for course in courses:
+        course.random_image = random.choice(image_urls)
     return render(request, 'courses/courses_home.html', { 'courses': courses })
 
 

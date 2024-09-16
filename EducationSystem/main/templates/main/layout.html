@@ -26,7 +26,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto d-flex align-items-center">
+            <ul class="navbar-nav d-flex align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
                 </li>
@@ -50,7 +50,9 @@
             <ul class="navbar-nav ms-auto d-flex align-items-center">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <span class="navbar-text">Привет, {{ user.username }}!</span>
+                    <span class="navbar-text">
+                        Привет, <a href="{% url 'profile' %}" class="fw-bold">{{ user.username }}!</a>
+                    </span>
                 </li>
                 <li class="nav-item">
                     <form class="nav-link" method="post" action="{% url 'logout' %}">

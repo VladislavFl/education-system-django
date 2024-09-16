@@ -1,19 +1,36 @@
 {% extends 'main/layout.html' %}
 {% block title %}Личный кабинет студента{% endblock %}
 {% block content %}
-<div class="container mt-0">
-    <h1>Добро пожаловать, {{ user.username }}!</h1>
-    <p>Это ваш личный кабинет.</p>
-    <p>Здесь вы можете просматривать ваши курсы и задания.</p>
-    <h2>Ваш прогресс:</h2>
-    <ul>
-        {% for progress in user_progress %}
-        <li>{{ progress.course.title }}:
-            {% for lesson in progress.completed_lessons.all %}
-            <span>{{ lesson.title }}</span>{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </li>
-        {% endfor %}
-    </ul>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1 class="display-4">Добро пожаловать, {{ user.username }}!</h1>
+            <p class="lead">Это ваш личный кабинет <strong>студента</strong>.</p>
+            <p>Здесь вы можете просматривать ваши курсы и задания.</p>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h2 class="h4">Ваш прогресс</h2>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for progress in user_progress %}
+                        <li class="list-group-item">
+                            <strong>{{ progress.course.title }}:</strong>
+                            <ul class="list-inline">
+                                {% for lesson in progress.completed_lessons.all %}
+                                <li class="list-inline-item badge bg-success">{{ lesson.title }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

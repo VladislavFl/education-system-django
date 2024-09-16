@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from .forms import UserRegisterForm, UserLoginForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .utils import user_in_group
 
 def register(request):
     if request.method == 'POST':
@@ -32,14 +33,6 @@ def login_view(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    user_groups = user.groups.values_list('name', flat=True)
-                    messages.info(user_groups)
-                    if 'Teacher' in user_groups:
-                        return redirect('teacher_profile')
-                    elif 'Student' in user_groups:
-                        return redirect('student_profile')
-                    else:
-                        return redirect('home')
                 else:
                     messages.error(request, 'Учетная запись неактивна.')
             else:
@@ -58,9 +51,7 @@ def student_profile(request):
 
 @login_required
 def profile(request):
-    user_groups = request.user.groups.values_list('name', flat=True)
-
-    if 'Student' in user_groups:
-        return render(request, 'accounts/student_profile.html', {'user': request.user})
-    else:
+    if user_in_group(request.user, 'Teacher'):
         return render(request, 'accounts/teacher_profile.html', {'user': request.user})
+    elif user_in_group(request.user, 'Student'):
+        return render(request, 'accounts/student_profile.html', {'user': request.user})
