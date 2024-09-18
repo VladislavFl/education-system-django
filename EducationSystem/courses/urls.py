@@ -23,6 +23,8 @@ urlpatterns = [
     path('delete_assignment/<int:assignment_id>/', views.delete_assignment, name='delete_assignment'),# Удаление задания
 
     path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+
+
     ]
 
 

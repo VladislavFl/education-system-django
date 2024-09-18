@@ -6,7 +6,7 @@ from .forms import UserRegisterForm, UserLoginForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .utils import user_in_group
-
+from courses.models import CourseProgress, Enrollment
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -45,9 +45,17 @@ def login_view(request):
 def teacher_profile(request):
     return render(request, 'accounts/teacher_profile.html', {'user': request.user})
 
+
+
 @login_required
 def student_profile(request):
-    return render(request, 'accounts/student_profile.html', {'user': request.user})
+    progress = CourseProgress.objects.filter(user=request.user)
+    enrollments = Enrollment.objects.filter(user=request.user)
+    return render(request, 'accounts/student_profile.html', {
+        'progress': progress,
+        'enrollments': enrollments,
+    })
+
 
 @login_required
 def profile(request):

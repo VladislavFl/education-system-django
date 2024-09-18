@@ -3,7 +3,7 @@ import random
 from sys import modules
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Courses, Modules, Lessons, Assignment, Enrollment
+from .models import Courses, Modules, Lessons, Assignment, Enrollment,CourseProgress
 from .forms import CoursesForm, ModuleForm, LessonForm, AssignmentForm, EnrollmentForm
 from django.contrib.auth.decorators import login_required
 
@@ -246,3 +246,74 @@ def delete_assignment(request, assignment_id):
         return redirect('lesson_detail', lesson_id=lesson_id)
     return render(request, 'courses/delete_assignment.html', {'assignment': assignment})
 
+
+@login_required
+def lesson_detail(request, lesson_id):
+    lesson = get_object_or_404(Lessons, id=lesson_id)
+    module = lesson.module
+    course = module.course
+
+    # Проверяем, записан ли студент на курс
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        return redirect('access_denied', course_id=course.id)
+
+    # Обновляем прогресс
+    progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    if lesson not in progress.completed_lessons.all():
+        progress.completed_lessons.add(lesson)
+
+        # Проверка на завершение всех уроков модуля
+        if module.lessons.count() == progress.completed_lessons.filter(module=module).count():
+            progress.completed_modules.add(module)
+
+        progress.save()
+
+    assignments = lesson.assignments.all()
+    next_lesson = get_next_lesson(lesson)  # Получаем следующий урок
+    return render(request, 'courses/lesson_detail.html', {
+        'lesson': lesson,
+        'assignments': assignments,
+        'module': module,
+        'next_lesson': next_lesson
+    })
+
+
+def get_next_lesson(current_lesson):
+    """Находим следующий урок в курсе."""
+    lessons = Lessons.objects.filter(module__course=current_lesson.module.course).order_by('id')
+    current_index = list(lessons).index(current_lesson)
+    if current_index + 1 < len(lessons):
+        return lessons[current_index + 1]
+    return None
+
+
+def course_detail(request, course_id):
+    course = get_object_or_404(Courses, id=course_id)
+    modules = course.modules.all()
+
+    # Получение прогресса пользователя
+    progress_percentage = 0
+    progress = None
+    if request.user.is_authenticated:
+        progress = CourseProgress.objects.filter(user=request.user, course=course).first()
+        if progress:
+            total_lessons_count = Lessons.objects.filter(module__course=course).count()
+            completed_lessons_count = progress.completed_lessons.count()
+            if total_lessons_count > 0:
+                progress_percentage = (completed_lessons_count / total_lessons_count) * 100
+
+    return render(request, 'courses/course_detail.html', {
+        'course': course,
+        'modules': modules,
+        'progress_percentage': progress_percentage,
+        'progress': progress
+    })
+    is_enrolled = False
+
+    if request.user.is_authenticated:
+        is_enrolled = Enrollment.objects.filter(user=request.user, course=course).exists()
+
+    return render(request, 'courses/course_detail.html', {
+        'course': course,
+        'is_enrolled': is_enrolled,
+    })

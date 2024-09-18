@@ -30,6 +30,7 @@ class Lessons(models.Model):
     title = models.CharField('Название урока', max_length=250)
     content = models.TextField('Содержание урока')
 
+
     def __str__(self):
         return self.title
 
@@ -56,3 +57,14 @@ class Enrollment(models.Model):
 
     class Meta:
         unique_together = ('user', 'course')
+
+
+
+class CourseProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='course_progress')
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='progress')
+    completed_modules = models.ManyToManyField('Modules', blank=True, related_name='completed_by')
+    completed_lessons = models.ManyToManyField('Lessons', blank=True, related_name='completed_by')
+
+    def __str__(self):
+        return f"Прогресс {self.user.username} в курсе {self.course.title}"

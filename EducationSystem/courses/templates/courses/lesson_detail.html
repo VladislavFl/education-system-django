@@ -7,6 +7,34 @@
     <h1>{{ lesson.title }}</h1>
     <p>{{ lesson.content }}</p>
 
+
+{% if user.is_authenticated and user|has_group:"Student" %}
+    <div class="progress mt-3">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+            {{ progress_percentage }}%
+        </div>
+    </div>
+    <h2>Ваш прогресс:</h2>
+    <ul>
+        {% for module in course.modules.all %}
+            <li>
+                {{ module.title }}
+                <ul>
+                    {% for lesson in module.lessons.all %}
+                        <li>
+                            {{ lesson.title }}
+                            {% if lesson in progress.completed_lessons.all %}
+                                <span class="badge bg-success">Пройдено</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
     <h2>Задания:</h2>
     <ul>
         {% for assignment in assignments %}
@@ -21,6 +49,9 @@
             </li>
         {% endfor %}
     </ul>
+    {% if next_lesson %}
+        <a href="{% url 'lesson_detail' next_lesson.id %}" class="btn btn-primary">Перейти к следующему уроку</a>
+    {% endif %}
 
     {% if user.is_authenticated and user|has_group:"Teacher" %}
         <div class="mb-3">

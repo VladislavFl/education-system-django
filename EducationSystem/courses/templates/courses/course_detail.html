@@ -22,8 +22,35 @@
 
     {% if request.GET.mode != 'edit' %}
     <a href="{% url 'enroll_in_course' course.id %}" class="btn btn-success mb-3">Записаться на курс</a>
-
     {% endif %}
+
+    {% if user.is_authenticated and user|has_group:"Student" %}
+        <div class="progress mt-3">
+            <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                {{ progress_percentage }}%
+            </div>
+        </div>
+
+        <h2>Ваш прогресс:</h2>
+        <ul>
+            {% for module in course.modules.all %}
+                <li>
+                    {{ module.title }}
+                    <ul>
+                        {% for lesson in module.lessons.all %}
+                            <li>
+                                {{ lesson.title }}
+                                {% if lesson in progress.completed_lessons.all %}
+                                    <span class="badge bg-success">Пройдено</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     {% if request.GET.mode == 'edit' %}
     <div class="mb-3">
         <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
@@ -34,6 +61,7 @@
         <button type="submit" class="btn btn-secondary">Сохранить курс</button>
     </form>
     {% endif %}
+
     <!-- Отображение списка модулей и уроков -->
     <h2 style="color: black;">Модули курса:</h2>
     <ul>
@@ -42,12 +70,10 @@
             {% if user.is_authenticated %}
                 {% if user|has_group:"Student" %}
                     <a href="{% url 'module_detail' module.id %}?mode=view" style="color: black;">{{ module.title }} <span class="arrow">▼</span></a>
-
                 {% elif user|has_group:"Teacher" %}
                     <a href="{% url 'module_detail' module.id %}?mode=edit" style="color: black;">{{ module.title }} <span class="arrow">▼</span></a>
                 {% endif %}
             {% endif %}
-
 
             <!-- Показывать уроки только если это не режим редактирования -->
             {% if request.GET.mode != 'edit' %}
@@ -74,7 +100,6 @@
 
     {% if request.GET.mode == 'edit' %}
     <!-- Режим редактирования -->
-
     <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
     {% endif %}
 

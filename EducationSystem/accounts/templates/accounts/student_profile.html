@@ -1,3 +1,4 @@
+<!-- student_profile.html -->
 {% extends 'main/layout.html' %}
 {% block title %}Личный кабинет студента{% endblock %}
 {% block content %}
@@ -6,30 +7,49 @@
         <div class="col-md-12 text-center">
             <h1 class="display-4">Добро пожаловать, {{ user.username }}!</h1>
             <p class="lead">Это ваш личный кабинет <strong>студента</strong>.</p>
-            <p>Здесь вы можете просматривать ваши курсы и задания.</p>
         </div>
     </div>
-    <div class="row mt-5">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h2 class="h4">Ваш прогресс</h2>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        {% for progress in user_progress %}
-                        <li class="list-group-item">
-                            <strong>{{ progress.course.title }}:</strong>
-                            <ul class="list-inline">
-                                {% for lesson in progress.completed_lessons.all %}
+    <!-- Вкладки -->
+    <ul class="nav nav-tabs mt-4" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button" role="tab" aria-controls="progress" aria-selected="true">
+                Мой прогресс
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button" role="tab" aria-controls="courses" aria-selected="false">
+                Мои курсы
+            </button>
+        </li>
+    </ul>
+    <!-- Контент вкладок -->
+    <div class="tab-content" id="profileTabsContent">
+        <!-- Вкладка "Мой прогресс" -->
+        <div class="tab-pane fade show active" id="progress" role="tabpanel" aria-labelledby="progress-tab">
+            <h2 class="mt-4">Ваш прогресс</h2>
+            <ul class="list-group">
+                {% for progress in user.course_progress.all %}
+                    <li class="list-group-item">
+                        <strong>{{ progress.course.title }}:</strong>
+                        <ul class="list-inline">
+                            {% for lesson in progress.completed_lessons.all %}
                                 <li class="list-inline-item badge bg-success">{{ lesson.title }}</li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- Вкладка "Мои курсы" -->
+        <div class="tab-pane fade" id="courses" role="tabpanel" aria-labelledby="courses-tab">
+            <h2 class="mt-4">Мои курсы</h2>
+            <ul class="list-group">
+                {% for enrollment in user.enrollment_set.all %}
+                    <li class="list-group-item">
+                        <a href="{% url 'course_detail' enrollment.course.id %}">{{ enrollment.course.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </div>
