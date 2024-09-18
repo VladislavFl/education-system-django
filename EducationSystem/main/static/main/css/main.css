@@ -1,14 +1,14 @@
-  image-container {
+image-container {
             position: relative;
             display: inline-block;
             max-width: 100%;
         }
-        .image-container img {
+.image-container img {
             width: 300px;
             height: auto;
             display: block;
         }
-        .overlay-text {
+.overlay-text {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -17,20 +17,20 @@
             text-align: center;
             width: 80%;
         }
-        .overlay-text h1 {
+.overlay-text h1 {
             font-size: 2em;
             margin-bottom: 10px;
         }
-        .overlay-text p {
+.overlay-text p {
             font-size: 1.2em;
             margin-bottom: 20px;
         }
-        .overlay-button {
+.overlay-button {
             position: absolute;
             bottom: 20px;
             left: 20px;
         }
-        .overlay-button button {
+.overlay-button button {
             padding: 10px 20px;
             font-size: 1em;
             color: white;
@@ -39,20 +39,20 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        .overlay-button button:hover {
+.overlay-button button:hover {
             background-color: #0056b3;
         }
 
-        .container {
+.container {
             width: 80%;
             margin: auto;
             overflow: hidden;
             padding: 20px;
         }
-        h1, h2 {
+ h1, h2 {
             color: #333;
         }
-        .contact-info, .goals, .offerings {
+.contact-info, .goals, .offerings {
             background: #fff;
             padding: 20px;
             margin: 20px 0;
@@ -60,12 +60,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .stepper {
+.stepper {
           .line {
             width: 2px;
             background-color: lightgrey !important;
           }
-          .lead {
+.lead {
             font-size: 1.1rem;
           }
 }
