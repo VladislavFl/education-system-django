@@ -25,30 +25,31 @@
     {% endif %}
 
     {% if user.is_authenticated and user|has_group:"Student" %}
-        <div class="progress mt-3">
-            <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                {{ progress_percentage }}%
-            </div>
+    <div class="progress mt-3" style="height: 25px;">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage|safe }}%;"
+             aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+            <span style="font-size: 1.5em;">{{ progress_percentage }}%</span>
         </div>
+    </div>
 
-        <h2>Ваш прогресс:</h2>
-        <ul>
-            {% for module in course.modules.all %}
+    <h2>Ваш прогресс:</h2>
+    <ul>
+        {% for module in course.modules.all %}
+        <li>
+            {{ module.title }}
+            <ul>
+                {% for lesson in module.lessons.all %}
                 <li>
-                    {{ module.title }}
-                    <ul>
-                        {% for lesson in module.lessons.all %}
-                            <li>
-                                {{ lesson.title }}
-                                {% if lesson in progress.completed_lessons.all %}
-                                    <span class="badge bg-success">Пройдено</span>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    <a href="{% url 'lesson_detail' lesson.id %}">{{ lesson.title }}</a>
+                    {% if lesson in progress.completed_lessons.all %}
+                    <span class="badge bg-success">Пройдено</span>
+                    {% endif %}
                 </li>
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
     {% endif %}
 
     {% if request.GET.mode == 'edit' %}
@@ -68,11 +69,13 @@
         {% for module in course.modules.all %}
         <li>
             {% if user.is_authenticated %}
-                {% if user|has_group:"Student" %}
-                    <a href="{% url 'module_detail' module.id %}?mode=view" style="color: black;">{{ module.title }} <span class="arrow">▼</span></a>
-                {% elif user|has_group:"Teacher" %}
-                    <a href="{% url 'module_detail' module.id %}?mode=edit" style="color: black;">{{ module.title }} <span class="arrow">▼</span></a>
-                {% endif %}
+            {% if user|has_group:"Student" %}
+            <a href="{% url 'module_detail' module.id %}?mode=view" style="color: black;">{{ module.title }} <span
+                    class="arrow">▼</span></a>
+            {% elif user|has_group:"Teacher" %}
+            <a href="{% url 'module_detail' module.id %}?mode=edit" style="color: black;">{{ module.title }} <span
+                    class="arrow">▼</span></a>
+            {% endif %}
             {% endif %}
 
             <!-- Показывать уроки только если это не режим редактирования -->
