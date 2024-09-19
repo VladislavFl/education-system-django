@@ -9,12 +9,6 @@
 
 
 {% if user.is_authenticated and user|has_group:"Student" %}
-    <div class="progress mt-3">
-        <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage }}%;" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-            {{ progress_percentage }}%
-        </div>
-    </div>
-    <h2>Ваш прогресс:</h2>
     <ul>
         {% for module in course.modules.all %}
             <li>
