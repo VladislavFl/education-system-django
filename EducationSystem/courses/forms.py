@@ -33,6 +33,10 @@ class ModuleForm(ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Название модуля'
             }),
+            'description': Textarea(attrs={
+                   'class': 'form-control',
+        'placeholder': 'Содержание урока'
+        }),
         }
 
 
