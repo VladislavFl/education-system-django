@@ -24,11 +24,11 @@
 
     {% if user.is_authenticated and user|has_group:"Teacher" %}
         <div class="mb-3">
-            <a href="{% url 'create_lesson' module.id %}" class="btn btn-info">Добавить урок</a>
-            <a href="{% url 'edit_module' module.id %}" class="btn btn-warning">Редактировать модуль</a>
-            <a href="{% url 'delete_module' module.id %}" class="btn btn-danger">Удалить модуль</a>
-            <a href="{% url 'course_detail' module.course.id %}" class="btn btn-secondary">Вернуться к курсу</a>
-        </div>
+            <a href="{% url 'create_lesson' module.id %}?mode=edit" class="btn btn-info">Добавить урок</a>
+            <a href="{% url 'edit_module' module.id %}?mode=edit" class="btn btn-warning">Редактировать модуль</a>
+            <a href="{% url 'delete_module' module.id %}?mode=edit" class="btn btn-danger">Удалить модуль</a>
+            <a href="{% url 'course_detail' module.course.id %}?mode=edit" class="btn btn-secondary">Вернуться к курсу</a>
+            </div>
     {% endif %}
 </div>
 

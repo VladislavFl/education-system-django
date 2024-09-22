@@ -85,15 +85,20 @@ def create_assignment(request, lesson_id):
 def course_detail(request, course_id):
     course = get_object_or_404(Courses, id=course_id)
     modules = course.modules.all()
+
     if request.method == 'POST':
-        # Здесь можно добавить логику для обработки сохранения курса
-        course.save()  # Сохраняем курс, если это необходимо
-        return redirect('course_detail', course_id=course.id)  # Перенаправляем на страницу курса
+        course.save()
+        return redirect('course_detail', course_id=course.id)
+
+    is_enrolled = False
+    if request.user.is_authenticated and Enrollment.objects.filter(user=request.user, course=course).exists():
+        is_enrolled = True
 
     return render(request, 'courses/course_detail.html', {
         'course': course,
         'modules': modules,
         'lessons': 3,
+        'is_enrolled': is_enrolled,
     })
 
 def module_detail(request, module_id):
@@ -127,9 +132,9 @@ def lesson_detail(request, lesson_id):
     })
 
 def assignment_detail(request, assignment_id):
-    # Получаем задание по его идентификатору
+
     assignment = get_object_or_404(Assignment, id=assignment_id)
-    lesson = assignment.lesson  # Предполагается, что задание связано с уроком
+    lesson = assignment.lesson  #
 
     # Отправляем данные в шаблон
     return render(request, 'courses/assignment_detail.html', {
@@ -140,7 +145,6 @@ def access_denied(request, course_id):
     course = get_object_or_404(Courses, id=course_id)
     return render(request, 'courses/access_denied.html', {'course': course})
 
-# Функция для записи на курс
 @login_required
 def enroll_in_course(request, course_id):
     course = get_object_or_404(Courses, id=course_id)
@@ -148,16 +152,11 @@ def enroll_in_course(request, course_id):
 
     if created:
         message = "Вы успешно записались на курс!"
-        # Получаем первую лекцию из модуля курса
         first_module = course.modules.first()
         if first_module:
             first_lesson = first_module.lessons.first()
             if first_lesson:
                 return redirect('lesson_detail', lesson_id=first_lesson.id)
-    else:
-        message = "Вы уже записаны на этот курс."
-
-    return render(request, 'courses/enrollment_success.html', {'message': message, 'course': course})
 
 @login_required
 def edit_course(request, course_id):
@@ -166,7 +165,7 @@ def edit_course(request, course_id):
         form = CoursesForm(request.POST, instance=course)
         if form.is_valid():
             form.save()# Сохраняем изменения
-            return redirect('course_detail', course_id=course.id)  # Перенаправляем на страницу курса
+            return redirect('create_module', course_id=course.id)  # Перенаправляем на страницу курса
     else:
         form = CoursesForm(instance=course)
     return render(request, 'courses/edit_course.html', {'form': form, 'course': course})
