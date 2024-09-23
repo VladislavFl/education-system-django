@@ -8,52 +8,60 @@
     <p>{{ lesson.content }}</p>
 
 
-{% if user.is_authenticated and user|has_group:"Student" %}
+    {% if user.is_authenticated and user|has_group:"Student" %}
     <ul>
         {% for module in course.modules.all %}
-            <li>
-                {{ module.title }}
-                <ul>
-                    {% for lesson in module.lessons.all %}
-                        <li>
-                            {{ lesson.title }}
-                            {% if lesson in progress.completed_lessons.all %}
-                                <span class="badge bg-success">Пройдено</span>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </li>
+        <li>
+            {{ module.title }}
+            <ul>
+                {% for lesson in module.lessons.all %}
+                <li>
+                    {{ lesson.title }}
+                    {% if lesson in progress.completed_lessons.all %}
+                    <span class="badge bg-success">Пройдено</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
         {% endfor %}
     </ul>
-{% endif %}
+    {% endif %}
 
 
     <h2>Задания:</h2>
     <ul>
         {% for assignment in assignments %}
-            <li>
-                {% if user.is_authenticated %}
-                    {% if user|has_group:"Student" %}
-                        <a href="{% url 'assignment_detail' assignment.id %}?mode=view">{{ assignment.title }}</a>
-                    {% elif user|has_group:"Teacher" %}
-                        <a href="{% url 'assignment_detail' assignment.id %}?mode=edit">{{ assignment.title }}</a>
-                    {% endif %}
-                {% endif %}
-            </li>
+        <li>
+            {% if user.is_authenticated %}
+            {% if user|has_group:"Student" %}
+            <a href="{% url 'assignment_detail' assignment.id %}?mode=view">{{ assignment.title }}</a>
+            {% elif user|has_group:"Teacher" %}
+
+            {% if request.GET.mode == 'edit' %}
+            <a href="{% url 'assignment_detail' assignment.id %}?mode=edit" style="color: black;">{{ assignment.title}}</a>
+            {% elif request.GET.mode == 'view' %}
+            <a href="{% url 'assignment_detail' assignment.id %}?mode=view" style="color: black;">{{ assignment.title }}</a>
+            {% endif %}
+
+            {% endif %}
+            {% endif %}
+        </li>
         {% endfor %}
     </ul>
     {% if next_lesson %}
-        <a href="{% url 'lesson_detail' next_lesson.id %}?mode=view" class="btn btn-primary">Перейти к следующему уроку</a>
+    <a href="{% url 'lesson_detail' next_lesson.id %}?mode=view" class="btn btn-primary">Перейти к следующему уроку</a>
     {% endif %}
 
     {% if user.is_authenticated and user|has_group:"Teacher" %}
-        <div class="mb-3">
-            <a href="{% url 'create_assignment' lesson.id %}" class="btn btn-info">Добавить задание</a>
-            <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-warning">Редактировать урок</a>
-            <a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger">Удалить урок</a>
-            <a href="{% url 'module_detail' lesson.module.id %}" class="btn btn-secondary">Вернуться к модулю</a>
-        </div>
+    {% if request.GET.mode == 'edit' %}
+    <div class="mb-3">
+        <a href="{% url 'create_assignment' lesson.id %}" class="btn btn-info">Добавить задание</a>
+        <a href="{% url 'edit_lesson' lesson.id %}" class="btn btn-warning">Редактировать урок</a>
+        <a href="{% url 'delete_lesson' lesson.id %}" class="btn btn-danger">Удалить урок</a>
+        <a href="{% url 'module_detail' lesson.module.id %}?mode=edit" class="btn btn-secondary">Вернуться к модулю</a>
+    </div>
+    {% endif %}
     {% endif %}
 </div>
 
