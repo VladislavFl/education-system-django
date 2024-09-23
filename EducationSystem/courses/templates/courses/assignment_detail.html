@@ -9,11 +9,13 @@
     <p>{{ assignment.description }}</p>
 
     {% if user.is_authenticated and user|has_group:"Teacher" %}
+    {% if request.GET.mode == 'edit' %}
         <div class="mb-3">
             <a href="{% url 'edit_assignment' assignment.id %}" class="btn btn-warning">Редактировать задание</a>
             <a href="{% url 'delete_assignment' assignment.id %}" class="btn btn-danger">Удалить задание</a>
-            <a href="{% url 'lesson_detail' assignment.lesson.id %}" class="btn btn-secondary">Вернуться к уроку</a>
+            <a href="{% url 'lesson_detail' assignment.lesson.id %}?mode=edit" class="btn btn-secondary">Вернуться к уроку</a>
         </div>
+    {% endif %}
     {% endif %}
 
 

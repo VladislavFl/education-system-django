@@ -28,36 +28,38 @@
 
     <p style="color: black;">Дата создания: {{ course.date }}</p>
 
-        {% if not request.GET.mode == 'edit' and not is_enrolled and course.is_automated %}
+    {% if not request.GET.mode == 'edit' and not is_enrolled and course.is_automated %}
     {% if not user.is_authenticated %}
-        <a href="{% url 'login' %}" class="btn btn-success mb-3">Войти, чтобы записаться</a>
+    <a href="{% url 'login' %}" class="btn btn-success mb-3">Войти, чтобы записаться</a>
     {% else %}
-      <a href="{% url 'enroll_in_course' course.id %}?mode=view" class="btn btn-success mb-3">Записаться на курс</a>
+    <a href="{% url 'enroll_in_course' course.id %}?mode=view" class="btn btn-success mb-3">Записаться на курс</a>
     {% endif %}
-{% endif %}
+    {% endif %}
 
+    {% if user|has_group:"Teacher" %}
     {% if request.GET.mode == 'edit' %}
-        <!-- Режим редактирования -->
-        <div class="button-group">
-            <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
-            <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
-            <form method="POST" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-secondary">Сохранить курс</button>
-            </form>
-            <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
-        </div>
+    <!-- Режим редактирования -->
+    <div class="button-group">
+        <a href="{% url 'edit_course' course.id %}" class="btn btn-warning">Редактировать курс</a>
+        <a href="{% url 'delete_course' course.id %}" class="btn btn-danger">Удалить курс</a>
+        <form method="POST" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Сохранить курс</button>
+        </form>
+        <a href="{% url 'courses_home' %}" class="btn btn-secondary">Назад к курсам</a>
+    </div>
+    {% endif %}
     {% endif %}
 
-    <!-- Прогресс студента -->
     {% if user.is_authenticated and user|has_group:"Student" %}
+    <h2>Ваш прогресс:</h2>
+    <!-- Прогресс студента -->
     <div class="progress mt-3" style="height: 25px;">
         <div class="progress-bar" role="progressbar" style="width: {{ progress_percentage|safe }}%;"
              aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
             <span style="font-size: 1.5em;">{{ progress_percentage }}%</span>
         </div>
     </div>
-    <h2>Ваш прогресс:</h2>
     {% endif %}
 
     <h2>Модули курса:</h2>
@@ -65,28 +67,37 @@
         {% for module in course.modules.all %}
         <li>
             {% if user.is_authenticated %}
-                {% if user|has_group:"Student" %}
-                <a href="{% url 'module_detail' module.id %}?mode=view" color: black; class="module-toggle">{{ module.title }} <span class="arrow">▼</span></a>
-                <ul class="lesson-list" style="display: none;">
-                    {% for lesson in module.lessons.all %}
-                    <li>
-                        <a href="{% url 'lesson_detail' lesson.id %}?mode=view">{{ lesson.title }}</a>
-                        {% if lesson in progress.completed_lessons.all %}
-                        <span class="badge bg-success">Пройдено</span>
-                        {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% elif user|has_group:"Teacher" %}
-                <a href="{% url 'module_detail' module.id %}?mode=edit" style="color: black;">{{ module.title }}</a>
-                {% endif %}
+            {% if user|has_group:"Student" %}
+            <a href="{% url 'module_detail' module.id %}?mode=view" class="module-toggle">{{ module.title }} <span
+                    class="arrow">▼</span></a>
+            <ul class="lesson-list" style="display: none;">
+                {% for lesson in module.lessons.all %}
+                <li>
+                    <a href="{% url 'lesson_detail' lesson.id %}?mode=view">{{ lesson.title }}</a>
+                    {% if lesson in progress.completed_lessons.all %}
+                    <span class="badge bg-success">Пройдено</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% elif user|has_group:"Teacher" %}
+
+            {% if request.GET.mode == 'edit' %}
+            <a href="{% url 'module_detail' module.id %}?mode=edit" style="color: black;">{{ module.title }}</a>
+            {% elif request.GET.mode == 'view' %}
+            <a href="{% url 'module_detail' module.id %}?mode=view" style="color: black;">{{ module.title }}</a>
+            {% endif %}
+
+            {% endif %}
             {% endif %}
         </li>
         {% endfor %}
     </ul>
 
+    {% if user|has_group:"Teacher" %}
     {% if request.GET.mode == 'edit' %}
-        <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
+    <a href="{% url 'create_module' course.id %}" class="btn btn-info">Добавить модуль</a>
+    {% endif %}
     {% endif %}
 </div>
 

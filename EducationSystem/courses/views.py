@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Courses, Modules, Lessons, Assignment, Enrollment,CourseProgress
 from .forms import CoursesForm, ModuleForm, LessonForm, AssignmentForm, EnrollmentForm
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 def courses_home(request):
     courses = Courses.objects.all()
@@ -24,13 +25,14 @@ def courses_home(request):
         course.random_image = random.choice(image_urls)
     return render(request, 'courses/courses_home.html', { 'courses': courses })
 
-
+@login_required
 def create_course(request):
     error = ''
     if request.method == 'POST':
         form = CoursesForm(request.POST)
         if form.is_valid():
             course = form.save()
+            enrollment, created = Enrollment.objects.get_or_create(user=request.user, course=course)
             return redirect('course_detail', course_id=course.id)
         else:
             error = 'Форма не верная'
@@ -43,6 +45,7 @@ def create_course(request):
     }
     return render(request, 'courses/create_course.html', data)
 
+@login_required
 def create_module(request, course_id):
     course = Courses.objects.get(id=course_id)
     if request.method == 'POST':
@@ -51,11 +54,12 @@ def create_module(request, course_id):
             module = form.save(commit=False)
             module.course = course
             module.save()
-            return redirect('module_detail', module_id=module.id)# Перенаправляем на страницу модуля
+            return HttpResponseRedirect(f'{module.get_absolute_url()}?mode=edit')  # Перенаправляем на страницу модуля
     else:
         form = ModuleForm()
     return render(request, 'courses/create_module.html', {'form': form, 'course': course})
 
+@login_required
 def create_lesson(request, module_id):
     module = Modules.objects.get(id=module_id)
     if request.method == 'POST':
@@ -64,11 +68,12 @@ def create_lesson(request, module_id):
             lesson = form.save(commit=False)
             lesson.module = module
             lesson.save()
-            return redirect('create_assignment', lesson_id=lesson.id)
+            return HttpResponseRedirect(f'{lesson.get_absolute_url()}?mode=edit')
     else:
         form = LessonForm()
     return render(request, 'courses/create_lesson.html', {'form': form, 'module': module})
 
+@login_required
 def create_assignment(request, lesson_id):
     lesson = Lessons.objects.get(id=lesson_id)
     if request.method == 'POST':
@@ -77,30 +82,12 @@ def create_assignment(request, lesson_id):
             assignment = form.save(commit=False)
             assignment.lesson = lesson
             assignment.save()
-            return redirect('lesson_detail', lesson_id=lesson.id)
+            return HttpResponseRedirect(f'{assignment.get_absolute_url()}?mode=edit')
     else:
         form = AssignmentForm()
     return render(request, 'courses/create_assignment.html', {'form': form, 'lesson': lesson})
 
-def course_detail(request, course_id):
-    course = get_object_or_404(Courses, id=course_id)
-    modules = course.modules.all()
-
-    if request.method == 'POST':
-        course.save()
-        return redirect('course_detail', course_id=course.id)
-
-    is_enrolled = False
-    if request.user.is_authenticated and Enrollment.objects.filter(user=request.user, course=course).exists():
-        is_enrolled = True
-
-    return render(request, 'courses/course_detail.html', {
-        'course': course,
-        'modules': modules,
-        'lessons': 3,
-        'is_enrolled': is_enrolled,
-    })
-
+@login_required
 def module_detail(request, module_id):
     module = get_object_or_404(Modules, id=module_id)
     lessons = module.lessons.all()  # Получаем все уроки модуля
@@ -131,6 +118,7 @@ def lesson_detail(request, lesson_id):
         'module': module,  # Передаем модуль в контекст
     })
 
+@login_required
 def assignment_detail(request, assignment_id):
 
     assignment = get_object_or_404(Assignment, id=assignment_id)
@@ -141,6 +129,7 @@ def assignment_detail(request, assignment_id):
         'assignment': assignment,
         'lesson': lesson,
     })
+
 def access_denied(request, course_id):
     course = get_object_or_404(Courses, id=course_id)
     return render(request, 'courses/access_denied.html', {'course': course})
@@ -152,11 +141,8 @@ def enroll_in_course(request, course_id):
 
     if created:
         message = "Вы успешно записались на курс!"
-        first_module = course.modules.first()
-        if first_module:
-            first_lesson = first_module.lessons.first()
-            if first_lesson:
-                return redirect('lesson_detail', lesson_id=first_lesson.id)
+        return redirect('course_detail', course_id=course_id)
+
 
 @login_required
 def edit_course(request, course_id):
@@ -185,7 +171,7 @@ def edit_module(request, module_id):
         form = ModuleForm(request.POST, instance=module)
         if form.is_valid():
             form.save()
-            return redirect('module_detail', module_id=module.id)# Перенаправляем на страницу модуля
+            return HttpResponseRedirect(f'{module.get_absolute_url()}?mode=edit') # Перенаправляем на страницу модуля
     else:
         form = ModuleForm(instance=module)
     return render(request, 'courses/edit_module.html', {'form': form, 'module': module})
@@ -198,7 +184,7 @@ def delete_module(request, module_id):
 
     if request.method == 'POST':
         module.delete()  # Удаляем модуль
-        return redirect('course_detail', course_id=course_id)  # Перенаправляем к деталям курса
+        return HttpResponseRedirect(f'{module.course.get_absolute_url()}?mode=edit')
 
     return render(request, 'courses/delete_module.html', {'module': module}) # Возвращаем страницу подтверждения удаления модуля
 
@@ -209,7 +195,7 @@ def edit_lesson(request, lesson_id):
         form = LessonForm(request.POST, instance=lesson)
         if form.is_valid():
             form.save()
-            return redirect('lesson_detail', lesson_id=lesson.id)
+            return HttpResponseRedirect(f'{lesson.get_absolute_url()}?mode=edit')
     else:
         form = LessonForm(instance=lesson)
     return render(request, 'courses/edit_lesson.html', {'form': form, 'lesson': lesson})
@@ -220,7 +206,7 @@ def delete_lesson(request, lesson_id):
     module_id = lesson.module.id  # Получаем ID модуля, к которому принадлежит урок
     if request.method == 'POST':
         lesson.delete()  # Удаляем урок
-        return redirect('module_detail', module_id=module_id)  # Перенаправляем к деталям модуля
+        return HttpResponseRedirect(f'{lesson.module.get_absolute_url()}?mode=edit')
     return render(request, 'courses/delete_lesson.html', {'lesson': lesson})
 
 @login_required
@@ -230,7 +216,7 @@ def edit_assignment(request, assignment_id):
         form = AssignmentForm(request.POST, instance=assignment)
         if form.is_valid():
             form.save()
-            return redirect('assignment_detail', assignment_id=assignment_id)
+            return HttpResponseRedirect(f'{assignment.get_absolute_url()}?mode=edit')
     else:
         form = AssignmentForm(instance=assignment)
     return render(request, 'courses/edit_assignment.html', {'form': form, 'assignment': assignment})
@@ -242,7 +228,7 @@ def delete_assignment(request, assignment_id):
     lesson_id = assignment.lesson.id
     if request.method == 'POST':
         assignment.delete()
-        return redirect('lesson_detail', lesson_id=lesson_id)
+        return HttpResponseRedirect(f'{assignment.lesson.module.get_absolute_url()}?mode=edit')
     return render(request, 'courses/delete_assignment.html', {'assignment': assignment})
 
 
@@ -285,10 +271,13 @@ def get_next_lesson(current_lesson):
         return lessons[current_index + 1]
     return None
 
-
+@login_required
 def course_detail(request, course_id):
     course = get_object_or_404(Courses, id=course_id)
     modules = course.modules.all()
+
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        return redirect('access_denied', course_id=course.id)
 
     # Получение прогресса пользователя
     progress_percentage = 0
