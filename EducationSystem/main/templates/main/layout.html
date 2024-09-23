@@ -37,16 +37,14 @@
                     <a class="nav-link" href="/#about"><i class="fas fa-address-card"></i> О школе</a>
                 </li>
 
-                {% if user.is_authenticated %}
-                    {% if user|has_group:"Teacher" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'create_course' %}">
-                                <button class="btn btn-info"><i class="fas fa-plus-circle"></i> Добавить курс</button>
-                            </a>
-                        </li>
-                    {% endif %}
-                {% endif %}
+
             </ul>
+
+        <button id="toggleContrast" class="btn btn-secondary" onclick="toggleContrast()">Версия для слабовидящих</button>
+        <button class="btn btn-light" onclick="changeFontSize(1)">A+</button>
+        <button class="btn btn-light" onclick="changeFontSize(-1)">A-</button>
+
+
             <ul class="navbar-nav ms-auto d-flex align-items-center">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
@@ -69,6 +67,10 @@
                 </li>
                 {% endif %}
             </ul>
+
+
+</nav>
+
         </div>
     </div>
 </nav>
@@ -88,3 +90,21 @@
     </div>
 </footer>
 </html>
+<script>
+function toggleContrast() {
+    document.body.classList.toggle('high-contrast');
+    const button = document.getElementById('toggleContrast');
+    button.textContent = document.body.classList.contains('high-contrast') ? 'Обычная версия' : 'Версия для слабовидящих';
+}
+
+function changeFontSize(step) {
+    let body = document.querySelector('body');
+    let currentSize = parseFloat(window.getComputedStyle(body).fontSize);
+    body.style.fontSize = (currentSize + step) + 'px';
+}
+function speakText(text) {
+    let speech = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(speech);
+}
+
+</script>

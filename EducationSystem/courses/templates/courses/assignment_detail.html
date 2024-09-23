@@ -5,6 +5,7 @@
 {% block content %}
 <div class="container mt-0">
     <h1>{{ assignment.title }}</h1>
+    <h2>Детали задания</h2>
     <p>{{ assignment.description }}</p>
 
     {% if user.is_authenticated and user|has_group:"Teacher" %}
@@ -15,7 +16,6 @@
         </div>
     {% endif %}
 
-    <h2>Детали задания</h2>
-    <p>Срок: {{ assignment.due_date }}</p>
-</div>
+
+ </div>
 {% endblock %}

@@ -1,3 +1,28 @@
+/* Стандартная версия */
+body {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Высококонтрастная версия */
+.high-contrast {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+
+.high-contrast a {
+    color: #ffcc00 !important;
+    text-decoration: underline;
+}
+
+.high-contrast .btn {
+    background-color: #ffcc00 !important;
+    color: #000000 !important;
+    border: 2px solid #ffffff !important;
+}
+
+
+
 image-container {
             position: relative;
             display: inline-block;

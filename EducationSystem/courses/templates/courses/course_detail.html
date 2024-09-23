@@ -23,6 +23,9 @@
 <div class="container mt-0">
     <h1 style="color: black;">{{ course.title }}</h1>
     <p style="color: black;">{{ course.description }}</p>
+    <p class="speak">{{ course.description }}</p>
+    <button onclick="speakText('{{ course.title }}')">Озвучить название курса</button>
+
     <p style="color: black;">Дата создания: {{ course.date }}</p>
 
         {% if not request.GET.mode == 'edit' and not is_enrolled and course.is_automated %}
@@ -102,6 +105,11 @@
             }
         });
     });
-</script>
+document.querySelectorAll('.speak').forEach(element => {
+    element.addEventListener('click', () => {
+        speakText(element.textContent);
+    });
+});
 
+</script>
 {% endblock %}
